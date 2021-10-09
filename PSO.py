@@ -12,11 +12,19 @@ class Particle:
         self.position  = position
         self.velocity  = velocity
         self.fitness   = 0
+        
+    def __repr__(self) -> str:
+        msg = f'''
+                position = {self.position}
+                velocity = {self.velocity}
+                fitness  = {self.fitness}
+                '''
+        return msg
 
 class Population:
     
     particles     : 'list[Particle]'
-    best_particle : Particle
+    best_particle : int # index of best particle
     
     # Initialize population
     def __init__(self, dim, pop_size, soln_range) -> None:
@@ -25,14 +33,19 @@ class Population:
             position = [np.random.uniform(-soln_range, soln_range) for _ in range(dim)]
             velocity = [np.random.uniform(-100, 100) for _ in range(dim)]
             self.particles[i] = Particle(position, velocity)
-        self.best_particle = 0 # index of best particle
-        
-    def get_population(self):
-        return self.particles
+        self.best_particle = 0
+    
+    def __repr__(self) -> str:
+        msg = f" best particle = {self.best_particle}\n"
+        for particle in self.particles:
+            msg += repr(particle) + "\n"
+        return msg
 
 class PSO:
     
     population : Population
+    max_iter   : int
+    # fitness_function : float, float, ... -> float
     
     # initialize population and compute fitness
     def __init__(self, fitness_function, pop_size = 100, soln_range = 1000, max_iter = 100) -> None:
@@ -47,6 +60,9 @@ class PSO:
             self.population.particles[i].fitness = fitness[i]
         # find the best particle in population
         # self.population.best_particle = self.sort_by_fitness()[0]
+        
+    def print_population(self):
+        print(self.population)
         
     def sort_by_fitness(self):
         pass
@@ -63,17 +79,6 @@ class PSO:
     def next(self):
         self.update_particles()
         self.update_bests()
-        
-    def print_particle(self, particle):
-        print(f'''
-            position = {particle.position}
-            velocity = {particle.velocity}
-            fitness  = {particle.fitness}
-            ''')
-    
-    def print_population(self):
-        for pariticle in self.population.particles:
-            self.print_particle(pariticle)
             
     def run(self):
         if self.iter < self.max_iter:
