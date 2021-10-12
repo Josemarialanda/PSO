@@ -166,27 +166,27 @@ class PSO:
          
 
 
-# test problem 1
+# test problem 1: the best known solution is f* = 1.3934651
 test1    = lambda x1, x2 : (x1-2)**2+(x2-1)**2
 test1_r1 = lambda x1, x2 : x1-2*x2+1
 test1_r2 = lambda x1, x2 : (((x1**2)/4)+x2**2-1)
 test1_r  = [test1_r1, test1_r2]
 test1_bounds = [(-5,5),(-5,5)]
 
-# pso = PSO(test1, restrictions = test1_r, pop_size=50, max_iter=10000, bounds = test1_bounds)
+# pso = PSO(test1, restrictions = test1_r, pop_size=100, max_iter=200, bounds = test1_bounds)
 # pso.run()
 
-# test problem 2
+# test problem 2: the best known solution is f* = -6961.81381
 test2    = lambda x1, x2 : (x1-10)**3+(x2-20)**3
 test2_r1 = lambda x1, x2 : 100-(x1-5)**2-(x2-5)**2
 test2_r2 = lambda x1, x2 : (x1-6)**2+(x2-5)**2-82.81
 test2_r  = [test2_r1, test2_r2]
 test2_bounds = [(13,100),(0,100)]
 
-# pso = PSO(test2, restrictions = test2_r, pop_size=50, max_iter=1000, bounds = test2_bounds)
+# pso = PSO(test2, restrictions = test2_r, pop_size=100, max_iter=200, bounds = test2_bounds)
 # pso.run()
 
-# g5 defined in [Michalewicz1996]
+# g5 defined in [Michalewicz1996]: the best known solution is f* = 5126.4981
 g5        = lambda x1, x2, x3, x4 : 3*x1+0.000001*x1**3+2*x2+0.000002/(3*x2**3)
 g5_r1     = lambda x1, x2, x3, x4 : (-1)*(x4-x3+0.55)
 g5_r2     = lambda x1, x2, x3, x4 :  (-1)*(x3-x4+0.55)
@@ -196,10 +196,10 @@ g5_r5     = lambda x1, x2, x3, x4 : 1000*np.sin(x4-0.25)+1000*np.sin(x4-x3-0.25)
 g5_r      = [g5_r1, g5_r2, g5_r3, g5_r4, g5_r5]
 g5_bounds = [(0,1200),(0,1200),(-0.55,0.55),(-0.55,0.55)]
 
-# pso = PSO(g5, restrictions = g5_r, pop_size=50, max_iter=5000, bounds = g5_bounds)
+# pso = PSO(g5, restrictions = g5_r, pop_size=100, max_iter=200, bounds = g5_bounds)
 # pso.run()
 
-# g7 defined in [Michalewicz1996]
+# g7 defined in [Michalewicz1996]: the best known solution is f* = 24.3062091
 g7 = lambda x1, x2, x3, x4, x5, x6, x7, x8, x9, x10: x1**2+x2**2+x1*x2-14*x1-16*x2+(x3-10)**2+4*(x4-5)**2+(x5-3)**2+2*(x6-1)**2+5*x7**2+7*(x8-11)**2+2*(x9-10)**2+(x10-7)**2+45
 g7_r1     = lambda x1, x2, x3, x4, x5, x6, x7, x8, x9, x10: (-1)*(105-4*x1-5*x2+3*x1-9*x8)
 g7_r2     = lambda x1, x2, x3, x4, x5, x6, x7, x8, x9, x10: (-1)*(-3*(x1-2)**2-4*(x2-3)**2-2*x3**2+7*x4+130)
@@ -212,5 +212,5 @@ g7_r8     = lambda x1, x2, x3, x4, x5, x6, x7, x8, x9, x10: (-1)*(-0.5*(x1-8)**2
 g7_r      = [g7_r1, g7_r2, g7_r3, g7_r4, g7_r5, g7_r6, g7_r7, g7_r8]
 g7_bounds = [(-10,10),(-10,10),(-10,10),(-10,10),(-10,10),(-10,10),(-10,10),(-10,10),(-10,10),(-10,10)]
 
-# pso = PSO(g7, restrictions = g7_r, pop_size=50, max_iter=20000, bounds = g7_bounds)
+# pso = PSO(g7, restrictions = g7_r, pop_size=100, max_iter=200, bounds = g7_bounds)
 # pso.run()
