@@ -73,8 +73,18 @@ class PSO:
         self.fitness_function = fitness_function
         self.dim = len(signature(fitness_function).parameters)
         self.restrictions = restrictions
+        self.bound_restrictions = []*len(bounds)
+        
+        if bounds != []:
+            for i in range(len(bounds)):
+                lower = bounds[i][0]
+                upper = bounds[i][1]
+                g_lower = lambda *x : x[0]-upper
+                g_upper = lambda *x : lower-x[1]
+                self.bound_restrictions.append(g_lower)
+                self.bound_restrictions.append(g_upper)
  
-        if len(restrictions) != 0:
+        if self.restrictions != [] or self.bound_restrictions != []:
             f = deepcopy(fitness_function)
             self.fitness_function = deepcopy(self.penalty(f))
         
@@ -92,15 +102,26 @@ class PSO:
     def CVD(self, *x):
         a = 1 # a is a positive real number
         V = 0
+        # restrictions
         for g in self.restrictions:
             V += np.max([0, g(*x)])
+        # bound restrictions
+        for i in range(len(self.bound_restrictions)):
+           g = self.bound_restrictions[i]
+           V += np.max([0, g(*x)])
         return V**a
     
+    # this is the culprit
     def penalty(self, f):
         def gte(*x):
             z = f(*self.population.best_particle.position)
             return np.abs(f(*x)-z) #TODO <- something's wrong here =/ (I think the problem is here)
-        return lambda *x : gte(*x) + 0.1*self.CVD(*x)**2
+        
+        # =(
+        # return lambda *x : gte(*x) + 0.1*self.CVD(*x)**2
+        return lambda *x : f(*x) + 10000*self.CVD(*x)
+        # return lambda *x : f(*x) + 10**20*np.sum([np.abs(np.max([0,g(*x)])) for g in self.restrictions])
+        # return f
         
     def print_population(self):
         print(self.population)
@@ -113,8 +134,8 @@ class PSO:
         best_pop = self.population.best_particle                # best particle position in population
         for i in range(self.pop_size):
             xk      = self.population.particles[i].position     # current particle position
-            xk_best = self.population.best_previous[i].position # previous best particle position
             vk      = self.population.particles[i].velocity     # current particle velocity
+            xk_best = self.population.best_previous[i].position # previous best particle position
             r1, r2 = np.random.uniform(size = 2)
             # update velocity
             self.population.particles[i].velocity = self.cf*(self.w*vk+self.c1*r1*(xk_best-xk)+self.c2*r2*(best_pop.position-xk))
@@ -143,8 +164,28 @@ class PSO:
             print(f'''Ciclo {self.iter+1}. f: {fitness} CVD: {cvd} x: {x}''')
             self.iter = self.iter + 1
          
-  
-g5 = lambda x1, x2 : 3*x1+0.000001*x1**3+2*x2+0.000002/(3*x2**3)
+
+
+
+
+# test problem
+test    = lambda x1, x2 : (x1-2)**2+(x2-1)**2
+test_r1 = lambda x1, x2 : 2*x2-1
+test_r2 = lambda x1, x2 : ((x1**2)/4)+x2**2-1
+test_r  = [test_r1, test_r2]
+test_bounds = [(-5,5),(-5,5)]
+
+# g5 defined in [Michalewicz1996]
+g5        = lambda x1, x2, x3, x4 : 3*x1+0.000001*x1**3+2*x2+0.000002/(3*x2**3)
+g5_r1     = lambda x1, x2, x3, x4 : -x4+x3-0.55 # <= 0
+g5_r2     = lambda x1, x2, x3, x4 : -x3+x4-0.55 # <= 0
+g5_r3     = lambda x1, x2, x3, x4 : 1000*np.sin(-x3-0.25)+1000*np.sin(-x4-0.25)+894.8-x1  # = 0
+g5_r4     = lambda x1, x2, x3, x4 : 1000*np.sin(x3-0.25)+1000*np.sin(x3-x4-0.25)+894.8-x2 # = 0
+g5_r5     = lambda x1, x2, x3, x4 : 1000*np.sin(x4-0.25)+1000*np.sin(x4-x3-0.25)+1294.8   # = 0
+g5_r      = [g5_r1, g5_r2, g5_r3, g5_r4, g5_r5]
+g5_bounds = [(0,1200),(0,1200),(-0.55,0.55),(-0.55,0.55)]
+
+# g7 defined in [Michalewicz1996]
 g7 = lambda x1, x2, x3, x4, x5, x6, x7, x8, x9, x10: x1**2+x2**2+x1*x2-14*x1-16*x2+(x3-10)**2+4*(x4-5)**2+(x5-3)**2+2*(x6-1)**2+5*x7**2+7*(x8-11)**2+2*(x9-10)**2+(x10-7)**2+45
 
 
@@ -152,10 +193,5 @@ g7 = lambda x1, x2, x3, x4, x5, x6, x7, x8, x9, x10: x1**2+x2**2+x1*x2-14*x1-16*
 
 
 
-
-test = lambda x1, x2 : (x1-2)**2 + (x2-1)**2
-h1 = lambda x1, x2 : 2*x2-1
-h2 = lambda x1, x2 : ((x1**2)/4)+x2**2-1
-h = [h1, h2]
-pso = PSO(test, restrictions = h, pop_size=50, max_iter=200, bounds = [(-1000,1000),(-1000,1000)])
+pso = PSO(test, restrictions = test_r, pop_size=50, max_iter=200, bounds = test_bounds)
 pso.run()
