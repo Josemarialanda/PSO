@@ -243,7 +243,7 @@ def run_test_2_experiments(num_experiments = 50):
         w = np.random.uniform(low=0.1,high=0.5)
         c1 = np.random.uniform(low=1.2,high=2.0)
         c2 = np.random.uniform(low=1.2,high=2.0)
-        pso = PSO(test2, restrictions = test2_r, pop_size=100, max_iter=200, bounds=test2_bounds, a=1, w=w, c1=c1, c2=c2, verbose=True)
+        pso = PSO(test2, restrictions = test2_r, pop_size=100, max_iter=200, bounds=test2_bounds, a=1, w=w, c1=c1, c2=c2)
         pso.run()
         X[i]   = pso.X
         CVD[i] = pso.cvd
