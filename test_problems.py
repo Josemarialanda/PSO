@@ -115,9 +115,11 @@ def ackley_5(x1,x2,x3,x4,x5):
     return -a*np.exp(-b*np.sqrt(1/n*xi_2_sum))-np.exp(1/n*xi_cos_sum)+a+np.exp(1)
 ackley_5_bounds  = [(-32.768,32.768),(-32.768,32.768),(-32.768,32.768),(-32.768,32.768),(-32.768,32.768)]
 
-pso = PSO(ackley_5, restrictions = [], pop_size=100, max_iter=200, bounds=ackley_5_bounds, w=w, c1=c1, c2=c2, s=0.1, verbose=True)
-pso.run()
-print("\nSolution: ", schwefel_5(*pso.population.best_particle.position))
+# pso = PSO(ackley_5, restrictions = [], pop_size=100, max_iter=200, bounds=ackley_5_bounds, w=w, c1=c1, c2=c2, s=0.1, verbose=True)
+# pso.run()
+# print("\nSolution: ", schwefel_5(*pso.population.best_particle.position))
+
+# more examples at: http://www.geatbx.com/download/GEATbx_ObjFunExpl_v38.pdf
 
 
 # g5 defined in [Michalewicz1996]: the best known solution is f* = 5126.4981
@@ -136,8 +138,6 @@ g5_bounds = [(0,1200),(0,1200),(-0.55,0.55),(-0.55,0.55)]
 # pso = PSO(g5, restrictions = g5_r, pop_size=100, max_iter=200, bounds = g5_bounds, s=0.1, w=w, c1=c1, c2=c2, verbose=True)
 # pso.run()
 # print(g5(*pso.population.best_particle.position))
-
-# more examples at: http://www.geatbx.com/download/GEATbx_ObjFunExpl_v38.pdf
 
 # experiments (run with s=0.1, s=10 and try pop_size = 100, 500, 1000 and finally try num_experiments = 100 and 1000 with pop_size=100 and s=0.1)
 # i.e try:
